@@ -1,153 +1,278 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niche-3D | Expert 3D Designing & Modeling</title>
+    <title>Niche3d | Maker Community & 3D Assets</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --maker-green: #00AE42;
+            --maker-green-hover: #008f36;
+            --maker-bg: #f4f4f5;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #ffffff;
+            background-color: var(--maker-bg);
+            color: #18181b;
         }
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .text-maker-green { color: var(--maker-green); }
+        .bg-maker-green { background-color: var(--maker-green); }
+        
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.4;
         }
-        .hero-gradient {
-            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+
+        .model-card {
+            background: white;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e4e4e7;
         }
-        .accent-text {
-            background: linear-gradient(to right, #ffffff, #a1a1a1);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .model-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 174, 66, 0.15);
+            border-color: var(--maker-green);
         }
-        /* Style for the logo to ensure it fits well in the nav */
-        .nav-logo {
-            filter: invert(1); /* Optional: Use this if your logo is dark and you want it white for the dark theme */
-            mix-blend-mode: screen; /* Helps blend the logo background if it's not transparent */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--maker-green);
+            transition: width 0.2s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
         }
     </style>
 </head>
-<body class="hero-gradient min-h-screen">
+<body class="antialiased">
 
-    <!-- Navigation -->
-    <nav class="flex items-center justify-between p-6 max-w-7xl mx-auto">
-        <div class="flex items-center gap-4">
-            <!-- logo.png must be in your folder -->
-            <img src="logo.png" alt="Niche Manufacturing Logo" class="h-12 w-auto object-contain nav-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-            
-            <!-- Fallback Icon if logo.png isn't found -->
-            <div class="w-10 h-10 bg-white rounded-lg hidden items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-6 h-6 text-black" fill="currentColor">
-                    <path d="M21 16.5c0 .38-.21.71-.53.88l-7.97 4.41c-.32.17-.69.17-1 0l-7.97-4.41c-.32-.17-.53-.5-.53-.88V7.5c0-.38.21-.71.53-.88l7.97-4.41c.32-.17.69-.17 1 0l7.97 4.41c.32.17.53.5.53.88v9z"/>
-                </svg>
+    <nav class="fixed top-0 w-full z-50 bg-white border-b border-zinc-200 px-4 md:px-8 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-8">
+            <div class="text-2xl font-black tracking-tighter flex items-center">
+                <div class="w-8 h-8 bg-maker-green rounded-lg mr-2 flex items-center justify-center">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                </div>
+                NICHE<span class="text-maker-green">3D</span>
             </div>
-            <span class="text-xl font-bold tracking-tighter">NICHE-3D</span>
+            <div class="hidden lg:flex space-x-6 text-sm text-zinc-600">
+                <a href="#" class="nav-link text-zinc-900">Models</a>
+                <a href="#" class="nav-link">Contests</a>
+                <a href="#" class="nav-link">Forum</a>
+                <a href="#" class="nav-link">Education</a>
+            </div>
         </div>
-        <div class="hidden md:flex gap-8 text-sm font-medium text-gray-400">
-            <a href="#" class="hover:text-white transition-colors">Portfolio</a>
-            <a href="#" class="hover:text-white transition-colors">Services</a>
-            <a href="#" class="hover:text-white transition-colors">Process</a>
-            <a href="mailto:contact@niche-3d.com" class="hover:text-white transition-colors">Contact</a>
+        
+        <div class="flex items-center space-x-4">
+            <div class="hidden sm:flex relative">
+                <input type="text" placeholder="Search 3D models..." class="bg-zinc-100 border-none rounded-full py-2 px-10 text-sm focus:ring-2 focus:ring-maker-green w-64 outline-none">
+                <svg class="w-4 h-4 absolute left-4 top-2.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+            <button class="bg-maker-green text-white px-5 py-2 rounded-full text-sm font-bold hover:brightness-110 transition-all">Upload</button>
         </div>
-        <button class="px-5 py-2 rounded-full bg-white text-black text-sm font-bold hover:bg-gray-200 transition-all">
-            Get a Quote
-        </button>
     </nav>
 
-    <!-- Hero Section -->
-    <main class="max-w-7xl mx-auto px-6 pt-20 pb-32">
-        <div class="text-center">
-            <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-                Precision <span class="accent-text">3D Design</span> & <br>
-                Manufacturing Modeling
-            </h1>
-            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                Transforming complex ideas into reality through high-fidelity 3D modeling, 
-                industrial design, and manufacturing-ready assets.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button class="w-full sm:w-auto px-8 py-4 bg-white text-black font-bold rounded-xl hover:scale-105 transition-transform">
-                    View Our Work
-                </button>
-                <button class="w-full sm:w-auto px-8 py-4 glass rounded-xl font-bold hover:bg-white/5 transition-all">
-                    Inquire About a Project
-                </button>
+    <header class="pt-32 pb-16 px-6 max-w-7xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold text-zinc-900 mb-6 tracking-tight">
+            Discover the next <span class="text-maker-green">Great Print</span>
+        </h1>
+        <p class="text-zinc-500 text-lg max-w-2xl mx-auto mb-8 font-medium">
+            Join the community of makers sharing high-quality, pre-tested 3D models optimized for precision.
+        </p>
+        <div class="flex flex-wrap justify-center gap-3">
+            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Articulated</span>
+            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Functional</span>
+            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Tools</span>
+            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Decor</span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 pb-24">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-xl font-bold flex items-center">
+                <span class="w-1.5 h-6 bg-maker-green rounded-full mr-3"></span>
+                Trending Models
+            </h2>
+            <div class="flex space-x-2 text-sm font-medium text-zinc-500">
+                <button class="text-maker-green font-bold border-b-2 border-maker-green pb-1">Popular</button>
+                <button class="hover:text-zinc-900 pb-1 px-2">Newest</button>
+                <button class="hover:text-zinc-900 pb-1 px-2">Free</button>
             </div>
         </div>
 
-        <!-- Featured Logo Area -->
-        <div class="mt-24 glass rounded-3xl p-4 aspect-video overflow-hidden group relative">
-            <div class="w-full h-full bg-[#111] rounded-2xl flex items-center justify-center relative overflow-hidden">
-                <!-- Large Logo Background -->
-                <img src="logo.png" alt="Featured Work" class="absolute opacity-10 w-2/3 object-contain nav-logo">
-                
-                <div class="z-10 text-center">
-                    <p class="text-xs uppercase tracking-widest text-white/40 mb-2">Precision Engineering</p>
-                    <h3 class="text-2xl font-semibold">The Niche Standard</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Model Item 1 -->
+            <div class="model-card rounded-xl overflow-hidden group">
+                <div class="aspect-square relative overflow-hidden bg-zinc-200">
+                    <img src="https://placehold.co/400x400/00ae42/ffffff?text=Industrial+Gear" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[10px] font-bold shadow-sm">
+                        STL + STEP
+                    </div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">High-Torque Planetary Gearset</h3>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[8px] text-white font-bold">N</div>
+                            <span class="text-xs text-zinc-500 font-medium">NicheDesign</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-zinc-400">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
+                                <span class="text-[10px] font-bold">1.2k</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Services Grid -->
-        <div class="mt-32 grid md:grid-cols-3 gap-8">
-            <div class="p-8 glass rounded-2xl">
-                <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>
-                    </svg>
+            <!-- Model Item 2 -->
+            <div class="model-card rounded-xl overflow-hidden group">
+                <div class="aspect-square relative overflow-hidden bg-zinc-200">
+                    <img src="https://placehold.co/400x400/27272a/ffffff?text=Articulated+Dragon" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-3 right-3 bg-maker-green text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-sm">
+                        FEATURED
+                    </div>
                 </div>
-                <h4 class="text-xl font-bold mb-4">3D Modeling</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    Custom 3D modeling for products, prototypes, and digital assets with surgical precision.
-                </p>
+                <div class="p-4">
+                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">Crystal Bone Dragon v2.0</h3>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">A</div>
+                            <span class="text-xs text-zinc-500 font-medium">Artifex</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-zinc-400">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
+                                <span class="text-[10px] font-bold">842</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="p-8 glass rounded-2xl border-white/20">
-                <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.642.316a10 10 0 01-4.54 1.214 4 4 0 00-4 4V21h3v-1a4 4 0 014-4h.353a2 2 0 011.414.586l1.212 1.212a2 2 0 001.414.586H19a2 2 0 002-2v-3a2 2 0 00-.572-1.414l-1.012-1.012z"></path>
-                    </svg>
+            <!-- More grid items can be added here -->
+             <div class="model-card rounded-xl overflow-hidden group">
+                <div class="aspect-square relative overflow-hidden bg-zinc-200">
+                    <img src="https://placehold.co/400x400/00ae42/ffffff?text=Minimal+Vase" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
-                <h4 class="text-xl font-bold mb-4">Industrial Design</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    Aesthetic meets functional design for consumer goods and manufacturing components.
-                </p>
+                <div class="p-4">
+                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">Geometric Low-Poly Vase</h3>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-[8px] text-white font-bold">M</div>
+                            <span class="text-xs text-zinc-500 font-medium">Minimalist</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-zinc-400">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
+                                <span class="text-[10px] font-bold">2.4k</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="p-8 glass rounded-2xl">
-                <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+            <div class="model-card rounded-xl overflow-hidden group">
+                <div class="aspect-square relative overflow-hidden bg-zinc-200">
+                    <img src="https://placehold.co/400x400/3f3f46/ffffff?text=Tool+Organizer" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                 </div>
-                <h4 class="text-xl font-bold mb-4">Ready-for-Print</h4>
-                <p class="text-gray-400 text-sm leading-relaxed">
-                    Optimized geometry for FDM, SLA, and SLS manufacturing processes.
-                </p>
+                <div class="p-4">
+                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">Workbench Hex Organizer</h3>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[8px] text-white font-bold">W</div>
+                            <span class="text-xs text-zinc-500 font-medium">WorkshopPro</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-zinc-400">
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
+                                <span class="text-[10px] font-bold">519</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/10 py-12 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col md:row items-center justify-between gap-6 text-gray-500 text-sm">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Logo" class="h-8 w-auto nav-logo">
-                <span class="font-bold text-white">NICHE-3D</span>
-                <span>&copy; 2026</span>
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white">Twitter</a>
-                <a href="#" class="hover:text-white">Instagram</a>
-                <a href="#" class="hover:text-white">Behance</a>
-            </div>
-        </div>
-    </footer>
+    <script>
+        let scene, camera, renderer, particles;
 
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.body.appendChild(renderer.domElement);
+
+            const partGeom = new THREE.BufferGeometry();
+            const partCount = 800;
+            const posArray = new Float32Array(partCount * 3);
+
+            for(let i = 0; i < partCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 20;
+            }
+            partGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            
+            const partMat = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x00AE42, // MakerWorld Green
+                transparent: true,
+                opacity: 0.2
+            });
+
+            particles = new THREE.Points(partGeom, partMat);
+            scene.add(particles);
+
+            camera.position.z = 8;
+
+            let mouseX = 0;
+            let mouseY = 0;
+
+            window.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particles.rotation.y += 0.001;
+                particles.rotation.x += 0.0005;
+                
+                // Smooth parallax
+                camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+                camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        window.onload = init3D;
+    </script>
 </body>
 </html>
