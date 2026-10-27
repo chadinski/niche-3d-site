@@ -1,278 +1,69 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Niche3d | Maker Community & 3D Assets</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --maker-green: #00AE42;
-            --maker-green-hover: #008f36;
-            --maker-bg: #f4f4f5;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--maker-bg);
-            color: #18181b;
-        }
-        .text-maker-green { color: var(--maker-green); }
-        .bg-maker-green { background-color: var(--maker-green); }
-        
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        .model-card {
-            background: white;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid #e4e4e7;
-        }
-        .model-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -8px rgba(0, 174, 66, 0.15);
-            border-color: var(--maker-green);
-        }
-        .nav-link {
-            position: relative;
-            font-weight: 500;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--maker-green);
-            transition: width 0.2s;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#131921">
+  <meta name="description" content="Explore the Niche3D collection of 3D printing model concepts, from functional parts and workshop organizers to sculptural home decor and articulated designs. Build your next print request.">
+  <title>Niche3D | Find your next great print</title>
+  <link rel="icon" href="assets/logo.webp" type="image/webp">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
-<body class="antialiased">
-
-    <nav class="fixed top-0 w-full z-50 bg-white border-b border-zinc-200 px-4 md:px-8 py-3 flex justify-between items-center">
-        <div class="flex items-center space-x-8">
-            <div class="text-2xl font-black tracking-tighter flex items-center">
-                <div class="w-8 h-8 bg-maker-green rounded-lg mr-2 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                </div>
-                NICHE<span class="text-maker-green">3D</span>
-            </div>
-            <div class="hidden lg:flex space-x-6 text-sm text-zinc-600">
-                <a href="#" class="nav-link text-zinc-900">Models</a>
-                <a href="#" class="nav-link">Contests</a>
-                <a href="#" class="nav-link">Forum</a>
-                <a href="#" class="nav-link">Education</a>
-            </div>
-        </div>
-        
-        <div class="flex items-center space-x-4">
-            <div class="hidden sm:flex relative">
-                <input type="text" placeholder="Search 3D models..." class="bg-zinc-100 border-none rounded-full py-2 px-10 text-sm focus:ring-2 focus:ring-maker-green w-64 outline-none">
-                <svg class="w-4 h-4 absolute left-4 top-2.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </div>
-            <button class="bg-maker-green text-white px-5 py-2 rounded-full text-sm font-bold hover:brightness-110 transition-all">Upload</button>
-        </div>
-    </nav>
-
-    <header class="pt-32 pb-16 px-6 max-w-7xl mx-auto text-center">
-        <h1 class="text-4xl md:text-6xl font-extrabold text-zinc-900 mb-6 tracking-tight">
-            Discover the next <span class="text-maker-green">Great Print</span>
-        </h1>
-        <p class="text-zinc-500 text-lg max-w-2xl mx-auto mb-8 font-medium">
-            Join the community of makers sharing high-quality, pre-tested 3D models optimized for precision.
-        </p>
-        <div class="flex flex-wrap justify-center gap-3">
-            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Articulated</span>
-            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Functional</span>
-            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Tools</span>
-            <span class="px-4 py-1.5 bg-white border border-zinc-200 rounded-full text-xs font-semibold hover:border-maker-green cursor-pointer transition-colors">#Decor</span>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-6 pb-24">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-xl font-bold flex items-center">
-                <span class="w-1.5 h-6 bg-maker-green rounded-full mr-3"></span>
-                Trending Models
-            </h2>
-            <div class="flex space-x-2 text-sm font-medium text-zinc-500">
-                <button class="text-maker-green font-bold border-b-2 border-maker-green pb-1">Popular</button>
-                <button class="hover:text-zinc-900 pb-1 px-2">Newest</button>
-                <button class="hover:text-zinc-900 pb-1 px-2">Free</button>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Model Item 1 -->
-            <div class="model-card rounded-xl overflow-hidden group">
-                <div class="aspect-square relative overflow-hidden bg-zinc-200">
-                    <img src="https://placehold.co/400x400/00ae42/ffffff?text=Industrial+Gear" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded-md text-[10px] font-bold shadow-sm">
-                        STL + STEP
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">High-Torque Planetary Gearset</h3>
-                    <div class="flex items-center justify-between mt-3">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-5 h-5 rounded-full bg-zinc-800 flex items-center justify-center text-[8px] text-white font-bold">N</div>
-                            <span class="text-xs text-zinc-500 font-medium">NicheDesign</span>
-                        </div>
-                        <div class="flex items-center space-x-3 text-zinc-400">
-                            <div class="flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
-                                <span class="text-[10px] font-bold">1.2k</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Model Item 2 -->
-            <div class="model-card rounded-xl overflow-hidden group">
-                <div class="aspect-square relative overflow-hidden bg-zinc-200">
-                    <img src="https://placehold.co/400x400/27272a/ffffff?text=Articulated+Dragon" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    <div class="absolute top-3 right-3 bg-maker-green text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-sm">
-                        FEATURED
-                    </div>
-                </div>
-                <div class="p-4">
-                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">Crystal Bone Dragon v2.0</h3>
-                    <div class="flex items-center justify-between mt-3">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">A</div>
-                            <span class="text-xs text-zinc-500 font-medium">Artifex</span>
-                        </div>
-                        <div class="flex items-center space-x-3 text-zinc-400">
-                            <div class="flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
-                                <span class="text-[10px] font-bold">842</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- More grid items can be added here -->
-             <div class="model-card rounded-xl overflow-hidden group">
-                <div class="aspect-square relative overflow-hidden bg-zinc-200">
-                    <img src="https://placehold.co/400x400/00ae42/ffffff?text=Minimal+Vase" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="p-4">
-                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">Geometric Low-Poly Vase</h3>
-                    <div class="flex items-center justify-between mt-3">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-5 h-5 rounded-full bg-amber-500 flex items-center justify-center text-[8px] text-white font-bold">M</div>
-                            <span class="text-xs text-zinc-500 font-medium">Minimalist</span>
-                        </div>
-                        <div class="flex items-center space-x-3 text-zinc-400">
-                            <div class="flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
-                                <span class="text-[10px] font-bold">2.4k</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="model-card rounded-xl overflow-hidden group">
-                <div class="aspect-square relative overflow-hidden bg-zinc-200">
-                    <img src="https://placehold.co/400x400/3f3f46/ffffff?text=Tool+Organizer" alt="Model" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                </div>
-                <div class="p-4">
-                    <h3 class="font-bold text-sm text-zinc-800 mb-1 truncate">Workbench Hex Organizer</h3>
-                    <div class="flex items-center justify-between mt-3">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-5 h-5 rounded-full bg-emerald-600 flex items-center justify-center text-[8px] text-white font-bold">W</div>
-                            <span class="text-xs text-zinc-500 font-medium">WorkshopPro</span>
-                        </div>
-                        <div class="flex items-center space-x-3 text-zinc-400">
-                            <div class="flex items-center space-x-1">
-                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z"></path></svg>
-                                <span class="text-[10px] font-bold">519</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        let scene, camera, renderer, particles;
-
-        function init3D() {
-            scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            document.body.appendChild(renderer.domElement);
-
-            const partGeom = new THREE.BufferGeometry();
-            const partCount = 800;
-            const posArray = new Float32Array(partCount * 3);
-
-            for(let i = 0; i < partCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 20;
-            }
-            partGeom.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            
-            const partMat = new THREE.PointsMaterial({
-                size: 0.05,
-                color: 0x00AE42, // MakerWorld Green
-                transparent: true,
-                opacity: 0.2
-            });
-
-            particles = new THREE.Points(partGeom, partMat);
-            scene.add(particles);
-
-            camera.position.z = 8;
-
-            let mouseX = 0;
-            let mouseY = 0;
-
-            window.addEventListener('mousemove', (e) => {
-                mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-                mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-            });
-
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                particles.rotation.y += 0.001;
-                particles.rotation.x += 0.0005;
-                
-                // Smooth parallax
-                camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-                camera.position.y += (-mouseY * 0.5 - camera.position.y) * 0.05;
-                camera.lookAt(scene.position);
-
-                renderer.render(scene, camera);
-            }
-            animate();
-        }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        window.onload = init3D;
-    </script>
+<body>
+  <a class="skip-link" href="#catalog">Skip to the collection</a>
+  <header class="site-header">
+    <div class="main-nav">
+      <a href="./" class="brand nav-outline" aria-label="Niche3D home"><img src="assets/logo.webp" width="44" height="44" alt="Niche Manufacturing"><span class="brand-type">niche<span>3d</span><small>MADE FOR YOUR IDEAS</small></span></a>
+      <a href="#catalog" class="header-note nav-outline"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><span><small>A world of possibilities</small><strong>Find your next print</strong></span></a>
+      <form id="search-form" class="search" role="search">
+        <label class="sr-only" for="search-category">Search category</label>
+        <select id="search-category"><option value="all">All</option><option value="Home & living">Home & living</option><option value="Workshop">Workshop</option><option value="Articulated">Articulated</option><option value="Functional parts">Functional parts</option></select>
+        <label class="sr-only" for="search-input">Search Niche3D</label><input id="search-input" name="q" type="search" placeholder="Search Niche3D" autocomplete="off" maxlength="160">
+        <button class="search-button" aria-label="Search"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg></button>
+      </form>
+      <button id="saved-button" class="header-action nav-outline"><small>Your inspiration</small><strong>Saved prints <span id="saved-count">(0)</span></strong></button>
+      <button class="header-action nav-outline custom-trigger"><small>Have your own idea?</small><strong>Custom print</strong></button>
+      <button id="request-button" class="request-button nav-outline" aria-label="Open print request, 0 items"><span class="cart-icon"><span id="request-count">0</span><svg aria-hidden="true"><use href="#i-cart"/></svg></span><strong>Request</strong></button>
+    </div>
+    <nav class="sub-nav" aria-label="Main navigation"><button id="all-menu-button"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg> All</button><a href="#catalog" data-category="all">Shop all designs</a><a href="#catalog" data-category="Home & living">Home & living</a><a href="#catalog" data-category="Workshop">Workshop essentials</a><a href="#catalog" data-category="Articulated">Articulated designs</a><a href="#catalog" data-category="Functional parts">Functional parts</a><button class="how-trigger">How it works</button><span class="sub-nav-end">Big ideas. Built layer by layer.</span></nav>
+  </header>
+  <main>
+    <section class="hero" aria-roledescription="carousel" aria-label="Explore the Niche3D collection">
+      <div class="hero-inner">
+        <button class="hero-arrow previous" id="hero-prev" aria-label="Previous collection"><svg class="icon" aria-hidden="true"><use href="#i-left"/></svg></button>
+        <div class="hero-copy"><p class="eyebrow" id="hero-eyebrow">A LITTLE IMAGINATION. ENDLESS POSSIBILITIES.</p><h1 id="hero-title">Your next great print<br>starts here.</h1><p id="hero-description">Useful, playful, a little unexpected.<br>Find a design that makes it yours.</p><a href="#catalog" id="hero-link" data-category="all">Explore the collection <span aria-hidden="true">→</span></a></div>
+        <div class="hero-art" aria-hidden="true"><span class="hero-circle"></span><img id="hero-image" src="assets/vase.webp" alt="" width="1024" height="1024" fetchpriority="high"><span class="hero-caption" id="hero-caption">THE HOME & LIVING EDIT</span><span class="hero-art-label">IDEAS, MADE TANGIBLE.</span></div>
+        <button class="hero-arrow next" id="hero-next" aria-label="Next collection"><svg class="icon" aria-hidden="true"><use href="#i-right"/></svg></button>
+        <div class="hero-dots" aria-label="Choose collection"><button aria-label="Collection 1" aria-current="true" data-slide="0"></button><button aria-label="Collection 2" data-slide="1"></button><button aria-label="Collection 3" data-slide="2"></button></div>
+      </div>
+    </section>
+    <div class="store-content">
+      <section class="discovery-grid" aria-label="Shop by collection">
+        <article class="discovery-card"><h2>Find your kind of print</h2><div class="category-tiles"><a href="#catalog" data-category="Home & living"><span><img src="assets/vase.webp" alt="Yellow geometric vase concept" width="512" height="512"></span>Home & living</a><a href="#catalog" data-category="Workshop"><span><img src="assets/organizer.webp" alt="Sage hexagonal organizer concept" width="512" height="512"></span>Workshop</a><a href="#catalog" data-category="Articulated"><span><img src="assets/dragon.webp" alt="Coral articulated dragon concept" width="512" height="512"></span>Articulated designs</a><a href="#catalog" data-category="Functional parts"><span><img src="assets/gear.webp" alt="Teal planetary gearset concept" width="512" height="512"></span>Functional parts</a></div><a class="text-link" href="#catalog" data-category="all">Discover all designs</a></article>
+        <article class="discovery-card"><h2>A fresh take on your space</h2><a class="feature-image vase-image" href="#catalog" data-category="Home & living" aria-label="Explore home and living designs"><img src="assets/vase.webp" alt="Concept illustration of a sculptural yellow low-poly vase" width="1024" height="1024"></a><a class="text-link" href="#catalog" data-category="Home & living">Explore home & living</a></article>
+        <article class="discovery-card"><h2>Make room for making</h2><a class="feature-image organizer-image" href="#catalog" data-category="Workshop" aria-label="Explore workshop designs"><img src="assets/organizer.webp" alt="Concept illustration of a modular hexagonal workbench organizer" width="1024" height="1024"></a><a class="text-link" href="#catalog" data-category="Workshop">Upgrade your workspace</a></article>
+        <article class="discovery-card"><h2>A little out of the ordinary</h2><a class="feature-image dragon-image" href="#catalog" data-category="Articulated" aria-label="Explore articulated designs"><img src="assets/dragon.webp" alt="Concept illustration of a coral articulated crystal dragon" width="1024" height="1024"></a><a class="text-link" href="#catalog" data-category="Articulated">Meet the articulated collection</a></article>
+      </section>
+      <section class="collection-intro"><div class="intro-icon"><svg class="icon" aria-hidden="true"><use href="#i-cube"/></svg></div><div><h2>From “what if” to your next project.</h2><p>Explore a design. Save an idea. Build a print request that’s uniquely yours.</p></div><button class="text-link how-trigger">See how it works <span aria-hidden="true">→</span></button></section>
+      <section id="catalog" class="catalog" aria-labelledby="catalog-title">
+        <div class="section-heading"><div><p class="eyebrow">THE NICHE3D COLLECTION</p><h2 id="catalog-title">Discover your next great print</h2></div><label class="sort-label" for="sort">Sort by: <select id="sort"><option value="featured">Featured</option><option value="az">Name: A to Z</option><option value="za">Name: Z to A</option></select></label></div>
+        <div class="catalog-toolbar"><div class="filter-tabs" role="group" aria-label="Filter designs"><button data-filter="all" aria-pressed="true">All designs</button><button data-filter="Home & living" aria-pressed="false">Home & living</button><button data-filter="Workshop" aria-pressed="false">Workshop</button><button data-filter="Articulated" aria-pressed="false">Articulated</button><button data-filter="Functional parts" aria-pressed="false">Functional parts</button></div><p id="result-count" aria-live="polite">4 designs</p></div>
+        <div id="active-search" class="active-search" hidden><span id="search-summary"></span><button id="clear-search" class="text-link">Clear filters</button></div><div id="products" class="product-grid"></div>
+        <div id="empty-state" class="empty-state" hidden><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><h3>No designs found</h3><p>Try a different search or explore the whole collection.</p><button id="reset-search" class="yellow-button">See all designs</button></div>
+        <p class="catalog-disclaimer">Images are concept illustrations. Materials, dimensions, availability, and pricing are confirmed individually before printing.</p>
+      </section>
+      <section class="custom-banner"><div class="custom-mark"><img src="assets/logo.webp" alt="Niche Manufacturing" width="100" height="100" loading="lazy"></div><div><p class="eyebrow">YOUR IDEA BELONGS HERE, TOO.</p><h2>Something more you?</h2><p>Bring your own concept to the workbench. Add a custom brief to your print request.</p></div><button class="yellow-button custom-trigger">Start a custom request <span aria-hidden="true">→</span></button></section>
+      <section class="browse-again"><h2>Good ideas are worth keeping.</h2><p>Save the designs you love and come back when inspiration strikes.</p><button id="browse-saved" class="yellow-button">See your saved prints</button><small>Saved in this browser. No account needed.</small></section>
+    </div>
+  </main>
+  <footer><button id="back-top" class="back-top">Back to top</button><div class="footer-content"><div><a href="./" class="footer-brand">niche<span>3d</span></a><p>Big ideas. Built layer by layer.</p><small>3D printing & model concepts</small></div><div><h3>Explore the collection</h3><a href="#catalog" data-category="all">All designs</a><a href="#catalog" data-category="Home & living">Home & living</a><a href="#catalog" data-category="Workshop">Workshop essentials</a></div><div><h3>Make it yours</h3><a href="#catalog" data-category="Articulated">Articulated designs</a><a href="#catalog" data-category="Functional parts">Functional parts</a><button class="custom-trigger">Start a custom request</button></div><div><h3>Here to help</h3><button class="how-trigger">How print requests work</button><button id="footer-saved">Your saved prints</button><button id="footer-request">Your print request</button></div></div><div class="footer-bottom"><span>© <span id="year">2026</span> Niche3D. Made for your ideas.</span><span>Independent 3D printing company.</span></div></footer>
+  <dialog id="product-dialog" class="product-dialog" aria-labelledby="detail-title"><button class="close-button" data-close aria-label="Close design details">×</button><div id="product-detail"></div></dialog>
+  <dialog id="request-dialog" class="side-dialog" aria-labelledby="request-title"><div class="drawer-header"><h2 id="request-title">Your print request</h2><button class="close-button" data-close aria-label="Close print request">×</button></div><div class="drawer-body"><div class="request-notice"><svg class="icon" aria-hidden="true"><use href="#i-cube"/></svg><p>A place for your next project.<br><strong>Choose designs. Add details. Make it yours.</strong></p></div><div id="request-items"></div><label class="field-label" for="request-notes">Your custom brief or project notes</label><textarea id="request-notes" rows="5" maxlength="3000" placeholder="Tell us about your idea, preferred size, material, color, or quantity…"></textarea><p class="field-help">A custom brief can be saved without selecting a design.</p><div class="request-summary"><span>Selected designs</span><strong id="request-total">0 items</strong></div><p class="quote-note">Pricing, materials, dimensions, and availability are confirmed before any order.</p><button id="download-request" class="yellow-button full-width">Download print request</button><button id="copy-request" class="outline-button full-width">Copy request text</button><p class="privacy-note">Saved only in this browser. Download or copy your request to share it with Niche3D through your usual contact channel. This page does not send your request or take payment.</p></div></dialog>
+  <dialog id="menu-dialog" class="side-dialog menu-dialog" aria-labelledby="menu-title"><div class="drawer-header"><h2 id="menu-title">Explore Niche3D</h2><button class="close-button" data-close aria-label="Close categories">×</button></div><div class="drawer-body"><h3>Shop by collection</h3><a href="#catalog" data-category="all">All designs <span>›</span></a><a href="#catalog" data-category="Home & living">Home & living <span>›</span></a><a href="#catalog" data-category="Workshop">Workshop essentials <span>›</span></a><a href="#catalog" data-category="Articulated">Articulated designs <span>›</span></a><a href="#catalog" data-category="Functional parts">Functional parts <span>›</span></a><hr><button class="custom-trigger">Start a custom request <span>›</span></button><button class="how-trigger">How it works <span>›</span></button></div></dialog>
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title"><button class="close-button" data-close aria-label="Close help">×</button><p class="eyebrow">FROM INSPIRATION TO A PRINT REQUEST</p><h2 id="help-title">Let’s make your next idea tangible.</h2><ol class="how-steps"><li><strong>Find your starting point</strong><p>Browse the collection, search for a design, or bring your own concept.</p></li><li><strong>Build your print request</strong><p>Add designs and quantities, then describe your preferred size, color, material, or custom idea.</p></li><li><strong>Take the next step</strong><p>Download or copy your brief and share it with Niche3D through your existing contact channel. All specifications, availability, and pricing need confirmation before an order.</p></li></ol><button class="yellow-button custom-trigger">Build a print request</button><p class="privacy-note">Your list stays on this device. No accounts, automatic submissions, or payments.</p></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Enable JavaScript to search the collection, view design details, and build a print request.</p></noscript>
+  <svg xmlns="http://www.w3.org/2000/svg" class="svg-definitions" aria-hidden="true"><symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 5 5"/></symbol><symbol id="i-cart" viewBox="0 0 32 28"><path d="M2 3h4l3 16h17l4-12H7"/><circle cx="12" cy="24" r="1.3"/><circle cx="25" cy="24" r="1.3"/></symbol><symbol id="i-menu" viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"/></symbol><symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.5 4.7a5.4 5.4 0 0 0-7.6 0l-.9 1-.9-1a5.4 5.4 0 0 0-7.6 7.6L12 21l8.5-8.7a5.4 5.4 0 0 0 0-7.6Z"/></symbol><symbol id="i-cube" viewBox="0 0 24 24"><path d="m12 2 9 5v10l-9 5-9-5V7l9-5Zm-9 5 9 5 9-5M12 12v10M7.5 4.5l9 5"/></symbol><symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol><symbol id="i-left" viewBox="0 0 24 24"><path d="m15 3-9 9 9 9"/></symbol><symbol id="i-right" viewBox="0 0 24 24"><path d="m9 3 9 9-9 9"/></symbol></svg>
 </body>
 </html>
